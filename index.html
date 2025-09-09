@@ -1,254 +1,134 @@
-<!DOCTYPE html>
+<!DOCTYPE html>      
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Quiz Kids 🧸</title>
 <style>
-  body {
-    font-family: "Comic Sans MS", Arial;
-    text-align: center;
-    background: linear-gradient(to bottom, #fff7e6, #ffe6f0);
-    padding: 20px;
-    overflow-x: hidden;
-  }
-  h1 {
-    color: #ff4d6d;
-    text-shadow: 2px 2px #ffd6d6;
-  }
-  #quiz-container {
-    max-width: 480px;
-    margin: auto;
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    animation: fadeIn 0.8s;
-    position: relative;
-    z-index: 2;
-  }
-  button {
-    padding: 12px 20px;
-    margin: 10px;
-    font-size: 18px;
-    border-radius: 12px;
-    cursor: pointer;
-    background-color: #ffe066;
-    border: none;
-    transition: 0.3s;
-    width: 90%;
-  }
+  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
+  h1 { color: #ff6f61; }
+  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.3s; }
   button:hover { transform: scale(1.05); }
-  button.correct { background-color: #90ee90 !important; animation: bounce 0.5s; }
-  button.wrong { background-color: #ff6961 !important; animation: shake 0.5s; }
+  .hidden { display: none; }
+  #quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   #feedback { font-size: 20px; margin: 15px 0; }
-  #score { font-size: 22px; font-weight: bold; color: #ff4d6d; }
-  img { max-width: 180px; margin: 10px 0; border-radius: 12px; }
-  #level { font-size: 18px; color: #444; margin-bottom: 10px; }
-  #progress-container {
-    width: 100%;
-    background: #ddd;
-    border-radius: 12px;
-    margin: 15px 0;
-  }
-  #progress-bar {
-    width: 0%;
-    height: 20px;
-    background: #ff4d6d;
-    border-radius: 12px;
-    transition: width 0.4s ease-in-out;
-  }
-  #lives {
-    font-size: 26px;
-    margin: 10px 0;
-  }
-
-  /* Animaciones */
-  @keyframes bounce {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Confeti */
-  .confetti {
-    position: fixed;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    background: red;
-    opacity: 0.9;
-    z-index: 1;
-    animation: fall linear forwards;
-  }
-  @keyframes fall {
-    to {
-      transform: translateY(100vh) rotate(720deg);
-      opacity: 0;
-    }
-  }
+  #score { font-size: 22px; font-weight: bold; color: #ff6f61; }
+  img { max-width: 160px; margin: 10px 0; border-radius: 12px; }
+  #level { font-size: 18px; color: #333; margin-bottom: 10px; }
+  #timer { font-size: 20px; color: #d9534f; font-weight: bold; margin-bottom: 10px; }
+  #lives { font-size: 22px; margin: 10px 0; color: #e63946; }
+  #next-btn.correct { background-color: #38b000; color: white; }
+  #next-btn.wrong { background-color: #d00000; color: white; }
+  #player-info { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  #player-info img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ff6f61; }
+  #start-screen img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+  #start-screen img.selected { border: 3px solid #ff6f61; }
+  #final-screen { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  #final-screen img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff6f61; }
+  #final-screen h2 { color: #38b000; }
 </style>
 </head>
 <body>
 <h1>English Quiz Kids 🧸</h1>
-<div id="quiz-container">
+
+<!-- Pantalla inicial -->
+<div id="start-screen">
+  <p>👉 Enter your name:</p>
+  <input type="text" id="player-name" placeholder="Your name" />
+  <p>👉 Choose your avatar:</p>
+  <div id="avatar-selection">
+    <!-- Avatares mujer -->
+    <img src="https://i.imgur.com/VG6zj9x.png" data-avatar="girl1">
+    <img src="https://i.imgur.com/Ly9kn0v.png" data-avatar="girl2">
+    <img src="https://i.imgur.com/8KwlfkY.png" data-avatar="girl3">
+    <!-- Avatares hombre -->
+    <img src="https://i.imgur.com/D6o6JY1.png" data-avatar="boy1">
+    <img src="https://i.imgur.com/it0B8Xp.png" data-avatar="boy2">
+    <img src="https://i.imgur.com/bh3bFtn.png" data-avatar="boy3">
+  </div>
+  <button onclick="startGame()">Start Quiz 🚀</button>
+</div>
+
+<!-- Contenedor del quiz -->
+<div id="quiz-container" class="hidden">
+  <div id="player-info">
+    <img id="player-avatar" src="" alt="avatar">
+    <span id="player-display"></span>
+  </div>
   <p id="level"></p>
-  <div id="lives">❤️❤️❤️</div>
-  <div id="progress-container"><div id="progress-bar"></div></div>
+  <p id="timer"></p>
+  <p id="lives"></p>
   <p id="question"></p>
   <img id="image" src="" alt="quiz image">
   <div id="options"></div>
   <p id="feedback"></p>
   <button id="next-btn" class="hidden">Next ➡️</button>
 </div>
-<p id="score"></p>
 
+<!-- Pantalla final -->
+<div id="final-screen" class="hidden">
+  <h2>🎉 Congratulations!</h2>
+  <img id="final-avatar" src="" alt="avatar">
+  <p id="final-name"></p>
+  <p id="final-score"></p>
+  <button onclick="location.reload()">Play Again 🔄</button>
+</div>
+
+<!-- sonidos -->
 <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<audio id="celebration-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+
+<!-- confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-const quiz = [
-  { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
-  { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
-  { level: "Level 1", question: "🚗 How do you say 'carro' in English?", img: "https://i.imgur.com/Uk6dX07.png", options: ["Bike", "Car", "Bus"], answer: "Car" },
-  { level: "Level 2", question: "🐘 Which is the largest land animal?", img: "https://i.imgur.com/6oEXW0n.png", options: ["Elephant", "Lion", "Cat"], answer: "Elephant" },
-  { level: "Level 2", question: "🌙 What do we see in the night sky?", img: "https://i.imgur.com/b7Q3n6p.png", options: ["Sun", "Moon", "Cloud"], answer: "Moon" },
-];
-
-let current = 0;
+let playerName = "";
+let playerAvatar = "";
 let score = 0;
-let lives = 3;
+let current = 0;
+let lives = 5; // vidas
 
-const questionEl = document.getElementById("question");
-const levelEl = document.getElementById("level");
-const imageEl = document.getElementById("image");
-const optionsEl = document.getElementById("options");
-const feedbackEl = document.getElementById("feedback");
-const nextBtn = document.getElementById("next-btn");
-const scoreEl = document.getElementById("score");
-const progressBar = document.getElementById("progress-bar");
-const livesEl = document.getElementById("lives");
+document.querySelectorAll("#avatar-selection img").forEach(img => {
+  img.onclick = () => {
+    document.querySelectorAll("#avatar-selection img").forEach(i => i.classList.remove("selected"));
+    img.classList.add("selected");
+    playerAvatar = img.src;
+  };
+});
 
-const correctSound = document.getElementById("correct-sound");
-const wrongSound = document.getElementById("wrong-sound");
-
-function shuffleArray(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+function startGame() {
+  playerName = document.getElementById("player-name").value.trim();
+  if(playerName === "" || playerAvatar === ""){
+    alert("⚠️ Please enter your name and choose an avatar.");
+    return;
+  }
+  document.getElementById("start-screen").classList.add("hidden");
+  document.getElementById("quiz-container").classList.remove("hidden");
+  document.getElementById("player-avatar").src = playerAvatar;
+  document.getElementById("player-display").textContent = playerName;
+  loadQuestion();
 }
 
-function updateLives() {
-  livesEl.textContent = "❤️".repeat(lives) + "🤍".repeat(3 - lives);
-}
+// ---- Aquí iría el array de 20 preguntas y la lógica del quiz (loadQuestion, checkAnswer, etc.) ----
 
-function loadQuestion() {
-  feedbackEl.textContent = "";
-  nextBtn.classList.add("hidden");
-  const q = quiz[current];
-  levelEl.textContent = q.level;
-  questionEl.textContent = q.question;
-  imageEl.src = q.img;
-  optionsEl.innerHTML = "";
-  shuffleArray(q.options).forEach(opt => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(btn, opt);
-    optionsEl.appendChild(btn);
+// Cuando termina el quiz:
+function finishQuiz() {
+  document.getElementById("quiz-container").classList.add("hidden");
+  document.getElementById("final-screen").classList.remove("hidden");
+
+  document.getElementById("final-avatar").src = playerAvatar;
+  document.getElementById("final-name").textContent = `Player: ${playerName}`;
+  document.getElementById("final-score").textContent = `Your score: ${score} / 20`;
+
+  // 🎉 sonido + confeti
+  document.getElementById("celebration-sound").play();
+  confetti({
+    particleCount: 200,
+    spread: 90,
+    origin: { y: 0.6 }
   });
-  progressBar.style.width = `${(current / quiz.length) * 100}%`;
-  updateLives();
 }
-
-function checkAnswer(btn, selected) {
-  const correct = quiz[current].answer;
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-  if(selected === correct){
-    btn.classList.add("correct");
-    feedbackEl.textContent = "🎉 Great job!";
-    correctSound.play();
-    score++;
-  } else {
-    btn.classList.add("wrong");
-    feedbackEl.textContent = "😅 Oops! You lost a ❤️";
-    wrongSound.play();
-    lives--;
-    updateLives();
-    if(lives <= 0){
-      gameOver();
-      return;
-    }
-  }
-  nextBtn.classList.remove("hidden");
-}
-
-nextBtn.onclick = () => {
-  current++;
-  if(current < quiz.length){
-    loadQuestion();
-  } else {
-    finishQuiz();
-  }
-}
-
-function gameOver(){
-  questionEl.textContent = "💀 Game Over!";
-  imageEl.src = "";
-  optionsEl.innerHTML = "";
-  feedbackEl.textContent = "Better luck next time!";
-  levelEl.textContent = "";
-  progressBar.style.width = "100%";
-  scoreEl.textContent = `Final score: ${score} / ${quiz.length}`;
-  nextBtn.classList.add("hidden");
-}
-
-function finishQuiz(){
-  questionEl.textContent = "🏆 Quiz Finished!";
-  imageEl.src = "";
-  optionsEl.innerHTML = "";
-  feedbackEl.textContent = "";
-  levelEl.textContent = "";
-  progressBar.style.width = "100%";
-  let message = score === quiz.length 
-    ? "🌟 Perfect! Amazing job!" 
-    : score >= quiz.length/2 
-      ? "👍 Good work, keep practicing!" 
-      : "📚 Don't worry, try again!";
-  scoreEl.textContent = `Your score: ${score} / ${quiz.length} - ${message}`;
-  nextBtn.classList.add("hidden");
-
-  if(score >= quiz.length/2){
-    launchConfetti();
-  }
-}
-
-/* 🎊 Confeti */
-function launchConfetti(){
-  for(let i=0; i<80; i++){
-    const confetti = document.createElement("div");
-    confetti.classList.add("confetti");
-    document.body.appendChild(confetti);
-
-    const colors = ["#ff4d6d", "#ffe066", "#90ee90", "#6ec6ff", "#ffb347"];
-    confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-    confetti.style.left = Math.random()*100 + "vw";
-    confetti.style.animationDuration = (Math.random()*2 + 2) + "s";
-    confetti.style.transform = `rotate(${Math.random()*360}deg)`;
-
-    setTimeout(() => { confetti.remove(); }, 4000);
-  }
-}
-
-loadQuestion();
 </script>
 </body>
 </html>
-  
