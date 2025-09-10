@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -148,3 +148,67 @@ function checkAnswer(selected) {
   clearInterval(timer);
   const correct = quiz[current].answer;
   if(selected === correct){
+    feedbackEl.textContent = "🎉 Great job!";
+    correctSound.play();
+    score++;
+    nextBtn.classList.add("correct");
+  } else {
+    feedbackEl.textContent = `😅 Oops! The correct answer was 👉 ${correct}`;
+    wrongSound.play();
+    lives--;
+    updateLives();
+    nextBtn.classList.add("wrong");
+    if(lives <= 0) endGame();
+  }
+  nextBtn.classList.remove("hidden");
+}
+
+nextBtn.onclick = () => {
+  current++;
+  if(current < quiz.length && lives > 0){
+    loadQuestion();
+  } else {
+    endGame();
+  }
+}
+
+function endGame() {
+  clearInterval(timer);
+  questionEl.textContent = "🏆 Quiz Finished!";
+  imageEl.src = "";
+  optionsEl.innerHTML = "";
+  feedbackEl.textContent = "";
+  levelEl.textContent = "";
+  timerEl.textContent = "";
+  scoreEl.textContent = `Your score: ${score} / ${quiz.length}`;
+  nextBtn.classList.add("hidden");
+
+  if(lives > 0){
+    celebrationSound.play();
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }, i * 600);
+    }
+  } else {
+    scoreEl.textContent += " ❌ Game Over!";
+  }
+}
+
+loadQuestion();
+
+/* ===============================
+   ⚡ Registro de Service Worker
+   =============================== */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker registrado ✅"))
+    .catch(err => console.log("Error SW:", err));
+}
+</script>
+</body>
+</html>
