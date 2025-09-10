@@ -1,110 +1,32 @@
-    <!DOCTYPE html>
+<!DOCTYPE html> (3)
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Quiz Kids 🧸</title>
 <style>
-  body {
-    font-family: "Comic Sans MS", Arial;
-    text-align: center;
-    background: linear-gradient(to bottom, #fff7e6, #ffe6f0);
-    padding: 20px;
-    overflow-x: hidden;
-  }
-  h1 {
-    color: #ff4d6d;
-    text-shadow: 2px 2px #ffd6d6;
-  }
-  #quiz-container {
-    max-width: 480px;
-    margin: auto;
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    animation: fadeIn 0.8s;
-    position: relative;
-    z-index: 2;
-  }
-  button {
-    padding: 12px 20px;
-    margin: 10px;
-    font-size: 18px;
-    border-radius: 12px;
-    cursor: pointer;
-    background-color: #ffe066;
-    border: none;
-    transition: 0.3s;
-    width: 90%;
-  }
+  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
+  h1 { color: #ff6f61; }
+  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.3s; }
   button:hover { transform: scale(1.05); }
-  button.correct { background-color: #90ee90 !important; animation: bounce 0.5s; }
-  button.wrong { background-color: #ff6961 !important; animation: shake 0.5s; }
+  .hidden { display: none; }
+  #quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   #feedback { font-size: 20px; margin: 15px 0; }
-  #score { font-size: 22px; font-weight: bold; color: #ff4d6d; }
-  img { max-width: 180px; margin: 10px 0; border-radius: 12px; }
-  #level { font-size: 18px; color: #444; margin-bottom: 10px; }
-  #progress-container {
-    width: 100%;
-    background: #ddd;
-    border-radius: 12px;
-    margin: 15px 0;
-  }
-  #progress-bar {
-    width: 0%;
-    height: 20px;
-    background: #ff4d6d;
-    border-radius: 12px;
-    transition: width 0.4s ease-in-out;
-  }
-  #lives {
-    font-size: 26px;
-    margin: 10px 0;
-  }
-
-  /* Animaciones */
-  @keyframes bounce {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Confeti */
-  .confetti {
-    position: fixed;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    background: red;
-    opacity: 0.9;
-    z-index: 1;
-    animation: fall linear forwards;
-  }
-  @keyframes fall {
-    to {
-      transform: translateY(100vh) rotate(720deg);
-      opacity: 0;
-    }
-  }
+  #score { font-size: 22px; font-weight: bold; color: #ff6f61; }
+  img { max-width: 160px; margin: 10px 0; border-radius: 12px; }
+  #level { font-size: 18px; color: #333; margin-bottom: 10px; }
+  #timer { font-size: 20px; color: #d9534f; font-weight: bold; margin-bottom: 10px; }
+  #lives { font-size: 22px; margin: 10px 0; color: #e63946; }
+  #next-btn.correct { background-color: #38b000; color: white; }
+  #next-btn.wrong { background-color: #d00000; color: white; }
 </style>
 </head>
 <body>
 <h1>English Quiz Kids 🧸</h1>
 <div id="quiz-container">
   <p id="level"></p>
-  <div id="lives">❤️❤️❤️</div>
-  <div id="progress-container"><div id="progress-bar"></div></div>
+  <p id="timer"></p>
+  <p id="lives"></p>
   <p id="question"></p>
   <img id="image" src="" alt="quiz image">
   <div id="options"></div>
@@ -113,24 +35,29 @@
 </div>
 <p id="score"></p>
 
+<!-- sonidos -->
 <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<audio id="celebration-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+
+<!-- librería confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
 const quiz = [
-  // Nivel 1
+  // Nivel 1 - 10 preguntas
   { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
   { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
-  { level: "Level 1", question: "🚗 How do you say 'carro' in English?", img: "https://i.imgur.com/Uk6dX07.png", options: ["Bike", "Car", "Bus"], answer: "Car" },
-  { level: "Level 1", question: "🍎 What fruit is red and round?", img: "https://i.imgur.com/5tZ6nLz.png", options: ["Apple", "Banana", "Orange"], answer: "Apple" },
   { level: "Level 1", question: "🐶 How do you say 'perro' in English?", img: "https://i.imgur.com/loLq3O9.png", options: ["Dog", "Cat", "Fish"], answer: "Dog" },
+  { level: "Level 1", question: "🍎 What fruit is red and round?", img: "https://i.imgur.com/5tZ6nLz.png", options: ["Banana", "Apple", "Orange"], answer: "Apple" },
+  { level: "Level 1", question: "🙏 How do you say 'gracias' in English?", img: "https://i.imgur.com/Nn4rNQo.png", options: ["Hello", "Goodbye", "Thank you"], answer: "Thank you" },
   { level: "Level 1", question: "🦁 What animal is the king of the jungle?", img: "https://i.imgur.com/UvYlJsz.png", options: ["Lion", "Tiger", "Elephant"], answer: "Lion" },
+  { level: "Level 1", question: "🚗 How do you say 'carro' in English?", img: "https://i.imgur.com/Uk6dX07.png", options: ["Bike", "Car", "Bus"], answer: "Car" },
   { level: "Level 1", question: "🌧️ What is the weather when it rains?", img: "https://i.imgur.com/I1nF4mU.png", options: ["Sunny", "Rainy", "Cloudy"], answer: "Rainy" },
   { level: "Level 1", question: "🎂 What do we eat on birthdays?", img: "https://i.imgur.com/3xHk2Qd.png", options: ["Cake", "Bread", "Rice"], answer: "Cake" },
   { level: "Level 1", question: "🐠 Which one is a fish?", img: "https://i.imgur.com/pH4A0Zo.png", options: ["Dog", "Fish", "Cat"], answer: "Fish" },
-  { level: "Level 1", question: "🙏 How do you say 'gracias' in English?", img: "https://i.imgur.com/Nn4rNQo.png", options: ["Hello", "Goodbye", "Thank you"], answer: "Thank you" },
 
-  // Nivel 2
+  // Nivel 2 - 10 preguntas
   { level: "Level 2", question: "🍌 What fruit is yellow and long?", img: "https://i.imgur.com/kdVrx9C.png", options: ["Banana", "Apple", "Pear"], answer: "Banana" },
   { level: "Level 2", question: "🐸 Which animal can jump very high?", img: "https://i.imgur.com/Mx5lNfE.png", options: ["Frog", "Dog", "Elephant"], answer: "Frog" },
   { level: "Level 2", question: "🌙 What do we see in the night sky?", img: "https://i.imgur.com/b7Q3n6p.png", options: ["Sun", "Moon", "Cloud"], answer: "Moon" },
@@ -145,7 +72,9 @@ const quiz = [
 
 let current = 0;
 let score = 0;
-let lives = 3;
+let timer;
+let timeLeft = 0;
+let lives = 5;
 
 const questionEl = document.getElementById("question");
 const levelEl = document.getElementById("level");
@@ -154,103 +83,113 @@ const optionsEl = document.getElementById("options");
 const feedbackEl = document.getElementById("feedback");
 const nextBtn = document.getElementById("next-btn");
 const scoreEl = document.getElementById("score");
-const progressBar = document.getElementById("progress-bar");
+const timerEl = document.getElementById("timer");
 const livesEl = document.getElementById("lives");
 
 const correctSound = document.getElementById("correct-sound");
 const wrongSound = document.getElementById("wrong-sound");
-
-function shuffleArray(arr) {
-  return arr.sort(() => Math.random() - 0.5);
-}
+const celebrationSound = document.getElementById("celebration-sound");
 
 function updateLives() {
-  livesEl.textContent = "❤️".repeat(lives) + "🤍".repeat(3 - lives);
+  livesEl.textContent = "❤️".repeat(lives);
 }
 
 function loadQuestion() {
   feedbackEl.textContent = "";
   nextBtn.classList.add("hidden");
+  nextBtn.classList.remove("correct", "wrong");
+  clearInterval(timer);
+
+  timeLeft = quiz[current].level === "Level 1" ? 15 : 8;
+  timerEl.textContent = `⏱️ Time: ${timeLeft}s`;
+  timer = setInterval(updateTimer, 1000);
+
   const q = quiz[current];
   levelEl.textContent = q.level;
   questionEl.textContent = q.question;
   imageEl.src = q.img;
   optionsEl.innerHTML = "";
-  shuffleArray(q.options).forEach(opt => {
+  q.options.forEach(opt => {
     const btn = document.createElement("button");
     btn.textContent = opt;
-    btn.onclick = () => checkAnswer(btn, opt);
+    btn.onclick = () => checkAnswer(opt);
     optionsEl.appendChild(btn);
   });
-  progressBar.style.width = `${(current / quiz.length) * 100}%`;
   updateLives();
 }
 
-function checkAnswer(btn, selected) {
-  const correct = quiz[current].answer;
-  Array.from(optionsEl.children).forEach(b => b.disabled = true);
-  if(selected === correct){
-    btn.classList.add("correct");
-    feedbackEl.textContent = "🎉 Great job!";
-    correctSound.play();
-    score++;
-  } else {
-    btn.classList.add("wrong");
-    feedbackEl.textContent = "😅 Oops! You lost a ❤️";
+function updateTimer() {
+  timeLeft--;
+  timerEl.textContent = `⏱️ Time: ${timeLeft}s`;
+  if (timeLeft <= 0) {
+    clearInterval(timer);
+    const correct = quiz[current].answer;
+    feedbackEl.textContent = `⏰ Time’s up! The correct answer was 👉 ${correct}`;
     wrongSound.play();
     lives--;
     updateLives();
-    if(lives <= 0){
-      gameOver();
-      return;
-    }
+    nextBtn.classList.add("wrong");
+    nextBtn.classList.remove("hidden");
+    if(lives <= 0) endGame();
+  }
+}
+
+function checkAnswer(selected) {
+  clearInterval(timer);
+  const correct = quiz[current].answer;
+  if(selected === correct){
+    feedbackEl.textContent = "🎉 Great job!";
+    correctSound.play();
+    score++;
+    nextBtn.classList.add("correct");
+  } else {
+    feedbackEl.textContent = `😅 Oops! The correct answer was 👉 ${correct}`;
+    wrongSound.play();
+    lives--;
+    updateLives();
+    nextBtn.classList.add("wrong");
+    if(lives <= 0) endGame();
   }
   nextBtn.classList.remove("hidden");
 }
 
 nextBtn.onclick = () => {
   current++;
-  if(current < quiz.length){
+  if(current < quiz.length && lives > 0){
     loadQuestion();
   } else {
-    finishQuiz();
+    endGame();
   }
 }
 
-function gameOver(){
-  questionEl.textContent = "💀 Game Over!";
-  imageEl.src = "";
-  optionsEl.innerHTML = "";
-  feedbackEl.textContent = "Better luck next time!";
-  levelEl.textContent = "";
-  progressBar.style.width = "100%";
-  scoreEl.textContent = `Final score: ${score} / ${quiz.length}`;
-  nextBtn.classList.add("hidden");
-}
-
-function finishQuiz(){
+function endGame() {
+  clearInterval(timer);
   questionEl.textContent = "🏆 Quiz Finished!";
   imageEl.src = "";
   optionsEl.innerHTML = "";
   feedbackEl.textContent = "";
   levelEl.textContent = "";
-  progressBar.style.width = "100%";
-  let message = score === quiz.length 
-    ? "🌟 Perfect! Amazing job!" 
-    : score >= quiz.length/2 
-      ? "👍 Good work, keep practicing!" 
-      : "📚 Don't worry, try again!";
-  scoreEl.textContent = `Your score: ${score} / ${quiz.length} - ${message}`;
+  timerEl.textContent = "";
+  scoreEl.textContent = `Your score: ${score} / ${quiz.length}`;
   nextBtn.classList.add("hidden");
 
-  if(score >= quiz.length/2){
-    launchConfetti();
+  if(lives > 0){
+    celebrationSound.play();
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }, i * 600);
+    }
+  } else {
+    scoreEl.textContent += " ❌ Game Over!";
   }
 }
 
-function launchConfetti(){
-  for(let i=0; i<80; i++){
-    const confetti = document.createElement("div");
-    confetti.classList.add("confetti");
-    document.body.appendChild(confetti);
-    const colors = ["
+loadQuestion();
+</script>
+</body>
+</html>
