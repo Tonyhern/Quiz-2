@@ -1,17 +1,25 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Quiz Kids 🧸</title>
 
+<!-- 🔗 Manifest para PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196f3">
+
+<!-- 📱 Íconos personalizados (aparecerán en pantalla de inicio) -->
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-512.png">
+
 <style>
-  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; margin:0; }
-  h1 { color: #ff6f61; margin-top:14px; }
-  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.15s; }
-  button:hover { transform: scale(1.03); }
+  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
+  h1 { color: #ff6f61; }
+  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.3s; }
+  button:hover { transform: scale(1.05); }
   .hidden { display: none; }
-  #quiz-container { max-width: 500px; margin: 12px auto 30px; background: white; padding: 18px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+  #quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
   #feedback { font-size: 20px; margin: 15px 0; }
   #score { font-size: 22px; font-weight: bold; color: #ff6f61; }
   img { max-width: 160px; margin: 10px 0; border-radius: 12px; }
@@ -20,10 +28,15 @@
   #lives { font-size: 22px; margin: 10px 0; color: #e63946; }
   #next-btn.correct { background-color: #38b000; color: white; }
   #next-btn.wrong { background-color: #d00000; color: white; }
+  /* Logo personalizado arriba */
+  #logo { width: 120px; margin-bottom: 10px; border-radius: 20%; }
 </style>
 </head>
 <body>
+<!-- Logo visible en la app -->
+<img id="logo" src="icon-192.png" alt="App Logo">
 <h1>English Quiz Kids 🧸</h1>
+
 <div id="quiz-container">
   <p id="level"></p>
   <p id="timer"></p>
@@ -36,38 +49,22 @@
 </div>
 <p id="score"></p>
 
-<!-- sonidos: si vas a subirlos localmente, pon aquí sus nombres (ver paso de Assets). 
- Si no, las URLs externas seguirán funcionando con internet -->
-<audio id="correct-sound" src="correct.mp3"></audio>
-<audio id="wrong-sound" src="wrong.mp3"></audio>
-<audio id="celebration-sound" src="applause.mp3"></audio>
+<!-- sonidos -->
+<audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+<audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<audio id="celebration-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 
-<!-- confetti: librería externa (funciona en WebView si hay internet) -->
+<!-- librería confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
+/* ===============================
+   🧸 English Quiz Kids Script
+   =============================== */
 const quiz = [
   { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
-  { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
-  { level: "Level 1", question: "🐶 How do you say 'perro' in English?", img: "https://i.imgur.com/loLq3O9.png", options: ["Dog", "Cat", "Fish"], answer: "Dog" },
-  { level: "Level 1", question: "🍎 What fruit is red and round?", img: "https://i.imgur.com/5tZ6nLz.png", options: ["Banana", "Apple", "Orange"], answer: "Apple" },
-  { level: "Level 1", question: "🙏 How do you say 'gracias' in English?", img: "https://i.imgur.com/Nn4rNQo.png", options: ["Hello", "Goodbye", "Thank you"], answer: "Thank you" },
-  { level: "Level 1", question: "🦁 What animal is the king of the jungle?", img: "https://i.imgur.com/UvYlJsz.png", options: ["Lion", "Tiger", "Elephant"], answer: "Lion" },
-  { level: "Level 1", question: "🚗 How do you say 'carro' in English?", img: "https://i.imgur.com/Uk6dX07.png", options: ["Bike", "Car", "Bus"], answer: "Car" },
-  { level: "Level 1", question: "🌧️ What is the weather when it rains?", img: "https://i.imgur.com/I1nF4mU.png", options: ["Sunny", "Rainy", "Cloudy"], answer: "Rainy" },
-  { level: "Level 1", question: "🎂 What do we eat on birthdays?", img: "https://i.imgur.com/3xHk2Qd.png", options: ["Cake", "Bread", "Rice"], answer: "Cake" },
-  { level: "Level 1", question: "🐠 Which one is a fish?", img: "https://i.imgur.com/pH4A0Zo.png", options: ["Dog", "Fish", "Cat"], answer: "Fish" },
-
-  { level: "Level 2", question: "🍌 What fruit is yellow and long?", img: "https://i.imgur.com/kdVrx9C.png", options: ["Banana", "Apple", "Pear"], answer: "Banana" },
-  { level: "Level 2", question: "🐸 Which animal can jump very high?", img: "https://i.imgur.com/Mx5lNfE.png", options: ["Frog", "Dog", "Elephant"], answer: "Frog" },
-  { level: "Level 2", question: "🌙 What do we see in the night sky?", img: "https://i.imgur.com/b7Q3n6p.png", options: ["Sun", "Moon", "Cloud"], answer: "Moon" },
-  { level: "Level 2", question: "🚌 Which one is a vehicle?", img: "https://i.imgur.com/6htFChJ.png", options: ["Bus", "Tree", "Dog"], answer: "Bus" },
-  { level: "Level 2", question: "⚽ What do we use to play football?", img: "https://i.imgur.com/G1IhQHv.png", options: ["Ball", "Book", "Chair"], answer: "Ball" },
-  { level: "Level 2", question: "🐘 Which is the largest land animal?", img: "https://i.imgur.com/6oEXW0n.png", options: ["Elephant", "Lion", "Cat"], answer: "Elephant" },
-  { level: "Level 2", question: "🌸 Which is a flower?", img: "https://i.imgur.com/cv3gq5d.png", options: ["Flower", "Rock", "Sun"], answer: "Flower" },
-  { level: "Level 2", question: "🍓 Which fruit is red and small?", img: "https://i.imgur.com/I6x4lJt.png", options: ["Strawberry", "Apple", "Banana"], answer: "Strawberry" },
-  { level: "Level 2", question: "🐦 Which one can fly?", img: "https://i.imgur.com/Msbb4Sk.png", options: ["Bird", "Dog", "Frog"], answer: "Bird" },
-  { level: "Level 2", question: "🌊 Where do fish live?", img: "https://i.imgur.com/1xH1i48.png", options: ["Ocean", "Tree", "Sky"], answer: "Ocean" }
+  { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" }
+  // ... 👆 aquí siguen tus demás preguntas
 ];
 
 let current = 0;
@@ -125,7 +122,7 @@ function updateTimer() {
     clearInterval(timer);
     const correct = quiz[current].answer;
     feedbackEl.textContent = `⏰ Time’s up! The correct answer was 👉 ${correct}`;
-    playWrong();
+    wrongSound.play();
     lives--;
     updateLives();
     nextBtn.classList.add("wrong");
@@ -134,67 +131,43 @@ function updateTimer() {
   }
 }
 
-function playWrong(){ try{ wrongSound.play(); }catch(e){} }
-function playCorrect(){ try{ correctSound.play(); }catch(e){} }
-function playCelebration(){ try{ celebrationSound.play(); }catch(e){} }
-
 function checkAnswer(selected) {
   clearInterval(timer);
   const correct = quiz[current].answer;
   if(selected === correct){
-    feedbackEl.textContent = "🎉 Great job!";
-    playCorrect();
+    feedbackEl.textContent = "✅ Correct!";
+    correctSound.play();
     score++;
     nextBtn.classList.add("correct");
+    confetti();
   } else {
-    feedbackEl.textContent = `😅 Oops! The correct answer was 👉 ${correct}`;
-    playWrong();
+    feedbackEl.textContent = `❌ Wrong! The correct answer was 👉 ${correct}`;
+    wrongSound.play();
     lives--;
     updateLives();
     nextBtn.classList.add("wrong");
     if(lives <= 0) endGame();
   }
+  scoreEl.textContent = `Score: ${score}`;
   nextBtn.classList.remove("hidden");
+}
+
+function endGame(){
+  feedbackEl.textContent = "🎉 Game Over! Your final score is: " + score;
+  celebrationSound.play();
+  nextBtn.classList.add("hidden");
 }
 
 nextBtn.onclick = () => {
   current++;
-  if(current < quiz.length && lives > 0){
+  if(current < quiz.length){
     loadQuestion();
   } else {
     endGame();
   }
-}
-
-function endGame() {
-  clearInterval(timer);
-  questionEl.textContent = "🏆 Quiz Finished!";
-  imageEl.src = "";
-  optionsEl.innerHTML = "";
-  feedbackEl.textContent = "";
-  levelEl.textContent = "";
-  timerEl.textContent = "";
-  scoreEl.textContent = `Your score: ${score} / ${quiz.length}`;
-  nextBtn.classList.add("hidden");
-
-  if(lives > 0){
-    playCelebration();
-    for (let i = 0; i < 3; i++) {
-      setTimeout(() => {
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      }, i * 600);
-    }
-  } else {
-    scoreEl.textContent += " ❌ Game Over!";
-  }
-}
+};
 
 loadQuestion();
 </script>
 </body>
 </html>
-  
