@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -119,11 +118,29 @@
 
 <script>
 const quiz = [
+  // Nivel 1
   { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
   { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
   { level: "Level 1", question: "🚗 How do you say 'carro' in English?", img: "https://i.imgur.com/Uk6dX07.png", options: ["Bike", "Car", "Bus"], answer: "Car" },
-  { level: "Level 2", question: "🐘 Which is the largest land animal?", img: "https://i.imgur.com/6oEXW0n.png", options: ["Elephant", "Lion", "Cat"], answer: "Elephant" },
+  { level: "Level 1", question: "🍎 What fruit is red and round?", img: "https://i.imgur.com/5tZ6nLz.png", options: ["Apple", "Banana", "Orange"], answer: "Apple" },
+  { level: "Level 1", question: "🐶 How do you say 'perro' in English?", img: "https://i.imgur.com/loLq3O9.png", options: ["Dog", "Cat", "Fish"], answer: "Dog" },
+  { level: "Level 1", question: "🦁 What animal is the king of the jungle?", img: "https://i.imgur.com/UvYlJsz.png", options: ["Lion", "Tiger", "Elephant"], answer: "Lion" },
+  { level: "Level 1", question: "🌧️ What is the weather when it rains?", img: "https://i.imgur.com/I1nF4mU.png", options: ["Sunny", "Rainy", "Cloudy"], answer: "Rainy" },
+  { level: "Level 1", question: "🎂 What do we eat on birthdays?", img: "https://i.imgur.com/3xHk2Qd.png", options: ["Cake", "Bread", "Rice"], answer: "Cake" },
+  { level: "Level 1", question: "🐠 Which one is a fish?", img: "https://i.imgur.com/pH4A0Zo.png", options: ["Dog", "Fish", "Cat"], answer: "Fish" },
+  { level: "Level 1", question: "🙏 How do you say 'gracias' in English?", img: "https://i.imgur.com/Nn4rNQo.png", options: ["Hello", "Goodbye", "Thank you"], answer: "Thank you" },
+
+  // Nivel 2
+  { level: "Level 2", question: "🍌 What fruit is yellow and long?", img: "https://i.imgur.com/kdVrx9C.png", options: ["Banana", "Apple", "Pear"], answer: "Banana" },
+  { level: "Level 2", question: "🐸 Which animal can jump very high?", img: "https://i.imgur.com/Mx5lNfE.png", options: ["Frog", "Dog", "Elephant"], answer: "Frog" },
   { level: "Level 2", question: "🌙 What do we see in the night sky?", img: "https://i.imgur.com/b7Q3n6p.png", options: ["Sun", "Moon", "Cloud"], answer: "Moon" },
+  { level: "Level 2", question: "🚌 Which one is a vehicle?", img: "https://i.imgur.com/6htFChJ.png", options: ["Bus", "Tree", "Dog"], answer: "Bus" },
+  { level: "Level 2", question: "⚽ What do we use to play football?", img: "https://i.imgur.com/G1IhQHv.png", options: ["Ball", "Book", "Chair"], answer: "Ball" },
+  { level: "Level 2", question: "🐘 Which is the largest land animal?", img: "https://i.imgur.com/6oEXW0n.png", options: ["Elephant", "Lion", "Cat"], answer: "Elephant" },
+  { level: "Level 2", question: "🌸 Which is a flower?", img: "https://i.imgur.com/cv3gq5d.png", options: ["Flower", "Rock", "Sun"], answer: "Flower" },
+  { level: "Level 2", question: "🍓 Which fruit is red and small?", img: "https://i.imgur.com/I6x4lJt.png", options: ["Strawberry", "Apple", "Banana"], answer: "Strawberry" },
+  { level: "Level 2", question: "🐦 Which one can fly?", img: "https://i.imgur.com/Msbb4Sk.png", options: ["Bird", "Dog", "Frog"], answer: "Bird" },
+  { level: "Level 2", question: "🌊 Where do fish live?", img: "https://i.imgur.com/1xH1i48.png", options: ["Ocean", "Tree", "Sky"], answer: "Ocean" }
 ];
 
 let current = 0;
@@ -231,24 +248,9 @@ function finishQuiz(){
   }
 }
 
-/* 🎊 Confeti */
 function launchConfetti(){
   for(let i=0; i<80; i++){
     const confetti = document.createElement("div");
     confetti.classList.add("confetti");
     document.body.appendChild(confetti);
-
-    const colors = ["#ff4d6d", "#ffe066", "#90ee90", "#6ec6ff", "#ffb347"];
-    confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-    confetti.style.left = Math.random()*100 + "vw";
-    confetti.style.animationDuration = (Math.random()*2 + 2) + "s";
-    confetti.style.transform = `rotate(${Math.random()*360}deg)`;
-
-    setTimeout(() => { confetti.remove(); }, 4000);
-  }
-}
-
-loadQuestion();
-</script>
-</body>
-</html>
+    const colors = ["
