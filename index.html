@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Quiz Kids 🧸</title>
+
+<!-- 🔗 Manifest para PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196f3">
+
+<!-- 📱 Íconos fallback -->
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-512.png">
+
 <style>
   body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
   h1 { color: #ff6f61; }
@@ -44,8 +53,10 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
+/* ===============================
+   🧸 English Quiz Kids Script
+   =============================== */
 const quiz = [
-  // Nivel 1 - 10 preguntas
   { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
   { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
   { level: "Level 1", question: "🐶 How do you say 'perro' in English?", img: "https://i.imgur.com/loLq3O9.png", options: ["Dog", "Cat", "Fish"], answer: "Dog" },
@@ -57,7 +68,6 @@ const quiz = [
   { level: "Level 1", question: "🎂 What do we eat on birthdays?", img: "https://i.imgur.com/3xHk2Qd.png", options: ["Cake", "Bread", "Rice"], answer: "Cake" },
   { level: "Level 1", question: "🐠 Which one is a fish?", img: "https://i.imgur.com/pH4A0Zo.png", options: ["Dog", "Fish", "Cat"], answer: "Fish" },
 
-  // Nivel 2 - 10 preguntas
   { level: "Level 2", question: "🍌 What fruit is yellow and long?", img: "https://i.imgur.com/kdVrx9C.png", options: ["Banana", "Apple", "Pear"], answer: "Banana" },
   { level: "Level 2", question: "🐸 Which animal can jump very high?", img: "https://i.imgur.com/Mx5lNfE.png", options: ["Frog", "Dog", "Elephant"], answer: "Frog" },
   { level: "Level 2", question: "🌙 What do we see in the night sky?", img: "https://i.imgur.com/b7Q3n6p.png", options: ["Sun", "Moon", "Cloud"], answer: "Moon" },
@@ -138,58 +148,3 @@ function checkAnswer(selected) {
   clearInterval(timer);
   const correct = quiz[current].answer;
   if(selected === correct){
-    feedbackEl.textContent = "🎉 Great job!";
-    correctSound.play();
-    score++;
-    nextBtn.classList.add("correct");
-  } else {
-    feedbackEl.textContent = `😅 Oops! The correct answer was 👉 ${correct}`;
-    wrongSound.play();
-    lives--;
-    updateLives();
-    nextBtn.classList.add("wrong");
-    if(lives <= 0) endGame();
-  }
-  nextBtn.classList.remove("hidden");
-}
-
-nextBtn.onclick = () => {
-  current++;
-  if(current < quiz.length && lives > 0){
-    loadQuestion();
-  } else {
-    endGame();
-  }
-}
-
-function endGame() {
-  clearInterval(timer);
-  questionEl.textContent = "🏆 Quiz Finished!";
-  imageEl.src = "";
-  optionsEl.innerHTML = "";
-  feedbackEl.textContent = "";
-  levelEl.textContent = "";
-  timerEl.textContent = "";
-  scoreEl.textContent = `Your score: ${score} / ${quiz.length}`;
-  nextBtn.classList.add("hidden");
-
-  if(lives > 0){
-    celebrationSound.play();
-    for (let i = 0; i < 3; i++) {
-      setTimeout(() => {
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      }, i * 600);
-    }
-  } else {
-    scoreEl.textContent += " ❌ Game Over!";
-  }
-}
-
-loadQuestion();
-</script>
-</body>
-</html>
