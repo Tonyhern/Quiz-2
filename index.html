@@ -1,25 +1,17 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <title>English Quiz Kids 🧸</title>
 
-<!-- 🔗 Manifest para PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196f3">
-
-<!-- 📱 Íconos fallback -->
-<link rel="icon" href="icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="icon-512.png">
-
 <style>
-  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
-  h1 { color: #ff6f61; }
-  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.3s; }
-  button:hover { transform: scale(1.05); }
+  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; margin:0; }
+  h1 { color: #ff6f61; margin-top:14px; }
+  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.15s; }
+  button:hover { transform: scale(1.03); }
   .hidden { display: none; }
-  #quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  #quiz-container { max-width: 500px; margin: 12px auto 30px; background: white; padding: 18px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
   #feedback { font-size: 20px; margin: 15px 0; }
   #score { font-size: 22px; font-weight: bold; color: #ff6f61; }
   img { max-width: 160px; margin: 10px 0; border-radius: 12px; }
@@ -44,18 +36,16 @@
 </div>
 <p id="score"></p>
 
-<!-- sonidos -->
-<audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-<audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-<audio id="celebration-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+<!-- sonidos: si vas a subirlos localmente, pon aquí sus nombres (ver paso de Assets). 
+ Si no, las URLs externas seguirán funcionando con internet -->
+<audio id="correct-sound" src="correct.mp3"></audio>
+<audio id="wrong-sound" src="wrong.mp3"></audio>
+<audio id="celebration-sound" src="applause.mp3"></audio>
 
-<!-- librería confetti -->
+<!-- confetti: librería externa (funciona en WebView si hay internet) -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* ===============================
-   🧸 English Quiz Kids Script
-   =============================== */
 const quiz = [
   { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
   { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" },
@@ -135,7 +125,7 @@ function updateTimer() {
     clearInterval(timer);
     const correct = quiz[current].answer;
     feedbackEl.textContent = `⏰ Time’s up! The correct answer was 👉 ${correct}`;
-    wrongSound.play();
+    playWrong();
     lives--;
     updateLives();
     nextBtn.classList.add("wrong");
@@ -144,17 +134,21 @@ function updateTimer() {
   }
 }
 
+function playWrong(){ try{ wrongSound.play(); }catch(e){} }
+function playCorrect(){ try{ correctSound.play(); }catch(e){} }
+function playCelebration(){ try{ celebrationSound.play(); }catch(e){} }
+
 function checkAnswer(selected) {
   clearInterval(timer);
   const correct = quiz[current].answer;
   if(selected === correct){
     feedbackEl.textContent = "🎉 Great job!";
-    correctSound.play();
+    playCorrect();
     score++;
     nextBtn.classList.add("correct");
   } else {
     feedbackEl.textContent = `😅 Oops! The correct answer was 👉 ${correct}`;
-    wrongSound.play();
+    playWrong();
     lives--;
     updateLives();
     nextBtn.classList.add("wrong");
@@ -184,7 +178,7 @@ function endGame() {
   nextBtn.classList.add("hidden");
 
   if(lives > 0){
-    celebrationSound.play();
+    playCelebration();
     for (let i = 0; i < 3; i++) {
       setTimeout(() => {
         confetti({
@@ -200,15 +194,7 @@ function endGame() {
 }
 
 loadQuestion();
-
-/* ===============================
-   ⚡ Registro de Service Worker
-   =============================== */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("Service Worker registrado ✅"))
-    .catch(err => console.log("Error SW:", err));
-}
 </script>
 </body>
 </html>
+  
