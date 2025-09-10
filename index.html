@@ -1,171 +1,117 @@
-<!DOCTYPE html>
+<!DOCTYPE html>.  
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Quiz Kids 🧸</title>
-
-<!-- 🔗 Manifest para PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196f3">
-
-<!-- 📱 Íconos personalizados (aparecerán en pantalla de inicio) -->
-<link rel="icon" href="icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="icon-512.png">
-
 <style>
-  body { font-family: Comic Sans MS, Arial; text-align: center; background-color: #fffae3; padding: 20px; }
-  h1 { color: #ff6f61; }
-  button { padding: 12px 25px; margin: 10px; font-size: 18px; border-radius: 12px; cursor: pointer; background-color: #ffe066; border: none; transition: 0.3s; }
-  button:hover { transform: scale(1.05); }
-  .hidden { display: none; }
-  #quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  #feedback { font-size: 20px; margin: 15px 0; }
-  #score { font-size: 22px; font-weight: bold; color: #ff6f61; }
-  img { max-width: 160px; margin: 10px 0; border-radius: 12px; }
-  #level { font-size: 18px; color: #333; margin-bottom: 10px; }
-  #timer { font-size: 20px; color: #d9534f; font-weight: bold; margin-bottom: 10px; }
-  #lives { font-size: 22px; margin: 10px 0; color: #e63946; }
-  #next-btn.correct { background-color: #38b000; color: white; }
-  #next-btn.wrong { background-color: #d00000; color: white; }
-  /* Logo personalizado arriba */
-  #logo { width: 120px; margin-bottom: 10px; border-radius: 20%; }
+body { font-family: Arial; text-align: center; background: #fffae3; padding: 20px; }
+h1 { color: #ff6f61; }
+button { padding: 10px 20px; margin: 5px; font-size: 16px; border-radius: 12px; cursor: pointer; background: #ffe066; border: none; transition:0.2s; }
+button:hover { transform: scale(1.05); }
+#quiz { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+#feedback { margin: 10px; font-weight: bold; }
+#score { font-size: 18px; margin-top: 10px; color:#ff6f61; }
+#next.correct { background-color:#38b000; color:white; }
+#next.wrong { background-color:#d00000; color:white; }
 </style>
 </head>
 <body>
-<!-- Logo visible en la app -->
-<img id="logo" src="icon-192.png" alt="App Logo">
 <h1>English Quiz Kids 🧸</h1>
-
-<div id="quiz-container">
-  <p id="level"></p>
-  <p id="timer"></p>
-  <p id="lives"></p>
+<div id="quiz">
   <p id="question"></p>
-  <img id="image" src="" alt="quiz image">
   <div id="options"></div>
   <p id="feedback"></p>
-  <button id="next-btn" class="hidden">Next ➡️</button>
+  <button id="next" class="hidden">Next ➡️</button>
 </div>
 <p id="score"></p>
 
-<!-- sonidos -->
+<!-- Sonidos externos -->
 <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 <audio id="celebration-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 
-<!-- librería confetti -->
+<!-- Librería confetti -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-/* ===============================
-   🧸 English Quiz Kids Script
-   =============================== */
 const quiz = [
-  { level: "Level 1", question: "🌞 What color is the sun?", img: "https://i.imgur.com/7b8UOaT.png", options: ["Blue", "Yellow", "Green"], answer: "Yellow" },
-  { level: "Level 1", question: "🐱 What animal says 'meow'?", img: "https://i.imgur.com/d7wLQDi.png", options: ["Dog", "Cat", "Bird"], answer: "Cat" }
-  // ... 👆 aquí siguen tus demás preguntas
+  {q:"🌞 What color is the sun?", opts:["Blue","Yellow","Green"], a:"Yellow"},
+  {q:"🐱 What animal says 'meow'?", opts:["Dog","Cat","Bird"], a:"Cat"},
+  {q:"🐶 How do you say 'perro' in English?", opts:["Dog","Cat","Fish"], a:"Dog"},
+  {q:"🍎 What fruit is red?", opts:["Banana","Apple","Orange"], a:"Apple"},
+  {q:"🙏 How do you say 'gracias' in English?", opts:["Hello","Goodbye","Thank you"], a:"Thank you"},
+  {q:"🦁 What animal is king of the jungle?", opts:["Lion","Tiger","Elephant"], a:"Lion"},
+  {q:"🚗 How do you say 'carro' in English?", opts:["Bike","Car","Bus"], a:"Car"},
+  {q:"🌧️ What is the weather when it rains?", opts:["Sunny","Rainy","Cloudy"], a:"Rainy"},
+  {q:"🎂 What do we eat on birthdays?", opts:["Cake","Bread","Rice"], a:"Cake"},
+  {q:"🐠 Which one is a fish?", opts:["Dog","Fish","Cat"], a:"Fish"},
+  {q:"🍌 What fruit is yellow and long?", opts:["Banana","Apple","Pear"], a:"Banana"},
+  {q:"🐸 Which animal can jump high?", opts:["Frog","Dog","Elephant"], a:"Frog"},
+  {q:"🌙 What do we see at night?", opts:["Sun","Moon","Cloud"], a:"Moon"},
+  {q:"🚌 Which one is a vehicle?", opts:["Bus","Tree","Dog"], a:"Bus"},
+  {q:"⚽ What do we use to play football?", opts:["Ball","Book","Chair"], a:"Ball"},
+  {q:"🐘 Which is the largest land animal?", opts:["Elephant","Lion","Cat"], a:"Elephant"},
+  {q:"🌸 Which is a flower?", opts:["Flower","Rock","Sun"], a:"Flower"},
+  {q:"🍓 Which fruit is red and small?", opts:["Strawberry","Apple","Banana"], a:"Strawberry"},
+  {q:"🐦 Which one can fly?", opts:["Bird","Dog","Frog"], a:"Bird"},
+  {q:"🌊 Where do fish live?", opts:["Ocean","Tree","Sky"], a:"Ocean"}
 ];
 
-let current = 0;
-let score = 0;
-let timer;
-let timeLeft = 0;
-let lives = 5;
+let current=0, score=0;
 
-const questionEl = document.getElementById("question");
-const levelEl = document.getElementById("level");
-const imageEl = document.getElementById("image");
-const optionsEl = document.getElementById("options");
-const feedbackEl = document.getElementById("feedback");
-const nextBtn = document.getElementById("next-btn");
-const scoreEl = document.getElementById("score");
-const timerEl = document.getElementById("timer");
-const livesEl = document.getElementById("lives");
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const feedbackEl=document.getElementById("feedback");
+const nextBtn=document.getElementById("next");
+const scoreEl=document.getElementById("score");
 
-const correctSound = document.getElementById("correct-sound");
-const wrongSound = document.getElementById("wrong-sound");
-const celebrationSound = document.getElementById("celebration-sound");
+const correctSound=document.getElementById("correct-sound");
+const wrongSound=document.getElementById("wrong-sound");
+const celebrationSound=document.getElementById("celebration-sound");
 
-function updateLives() {
-  livesEl.textContent = "❤️".repeat(lives);
-}
-
-function loadQuestion() {
-  feedbackEl.textContent = "";
+function loadQuestion(){
+  feedbackEl.textContent="";
   nextBtn.classList.add("hidden");
-  nextBtn.classList.remove("correct", "wrong");
-  clearInterval(timer);
-
-  timeLeft = quiz[current].level === "Level 1" ? 15 : 8;
-  timerEl.textContent = `⏱️ Time: ${timeLeft}s`;
-  timer = setInterval(updateTimer, 1000);
-
-  const q = quiz[current];
-  levelEl.textContent = q.level;
-  questionEl.textContent = q.question;
-  imageEl.src = q.img;
-  optionsEl.innerHTML = "";
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(opt);
+  nextBtn.classList.remove("correct","wrong");
+  const q=quiz[current];
+  questionEl.textContent=q.q;
+  optionsEl.innerHTML="";
+  q.opts.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>checkAnswer(opt);
     optionsEl.appendChild(btn);
   });
-  updateLives();
 }
 
-function updateTimer() {
-  timeLeft--;
-  timerEl.textContent = `⏱️ Time: ${timeLeft}s`;
-  if (timeLeft <= 0) {
-    clearInterval(timer);
-    const correct = quiz[current].answer;
-    feedbackEl.textContent = `⏰ Time’s up! The correct answer was 👉 ${correct}`;
-    wrongSound.play();
-    lives--;
-    updateLives();
-    nextBtn.classList.add("wrong");
-    nextBtn.classList.remove("hidden");
-    if(lives <= 0) endGame();
-  }
-}
-
-function checkAnswer(selected) {
-  clearInterval(timer);
-  const correct = quiz[current].answer;
-  if(selected === correct){
-    feedbackEl.textContent = "✅ Correct!";
-    correctSound.play();
+function checkAnswer(selected){
+  const correct=quiz[current].a;
+  if(selected===correct){
     score++;
+    feedbackEl.textContent="✅ Correct!";
+    correctSound.play();
+    confetti({particleCount: 50, spread: 70, origin:{y:0.6}});
     nextBtn.classList.add("correct");
-    confetti();
   } else {
-    feedbackEl.textContent = `❌ Wrong! The correct answer was 👉 ${correct}`;
+    feedbackEl.textContent=`❌ Wrong! Correct: ${correct}`;
     wrongSound.play();
-    lives--;
-    updateLives();
     nextBtn.classList.add("wrong");
-    if(lives <= 0) endGame();
   }
-  scoreEl.textContent = `Score: ${score}`;
   nextBtn.classList.remove("hidden");
 }
 
-function endGame(){
-  feedbackEl.textContent = "🎉 Game Over! Your final score is: " + score;
-  celebrationSound.play();
-  nextBtn.classList.add("hidden");
-}
-
-nextBtn.onclick = () => {
+nextBtn.onclick=()=>{
   current++;
-  if(current < quiz.length){
-    loadQuestion();
-  } else {
-    endGame();
+  if(current<quiz.length) loadQuestion();
+  else{
+    questionEl.textContent="🏆 Quiz finished!";
+    optionsEl.innerHTML="";
+    nextBtn.classList.add("hidden");
+    scoreEl.textContent=`Score: ${score}/${quiz.length}`;
+    celebrationSound.play();
   }
-};
+}
 
 loadQuestion();
 </script>
